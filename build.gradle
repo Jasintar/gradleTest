@@ -1,0 +1,45 @@
+import groovy.io.FileType
+
+group 'ru.innopiolis.uni.course3'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+task versionInc << {
+    def ver = new File('build.num').readLines().first()
+    ver++
+    def verStr = "_"  + ver
+    version verStr
+
+    def pw = new File('build.num')
+    pw.write ver
+}
+
+task changelog << {
+    def list = []
+
+    def dir = new File("src")
+    dir.eachFileRecurse (FileType.FILES) { file ->
+        list << file
+        println file.getName() + ": " + new Date(file.lastModified()).toGMTString()
+    }
+}
+
+task hello << {
+    printf("hello!");
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+//    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.21'
+}
+
+//jar.dependsOn versionInc
